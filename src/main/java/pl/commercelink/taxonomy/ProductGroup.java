@@ -6,5 +6,6 @@ public enum ProductGroup {
     PrintersScanners,
     PcComponents,
     Peripherals,
+    Furniture,
     Services
 }

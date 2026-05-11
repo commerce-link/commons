@@ -55,7 +55,15 @@ public enum ProductCategory {
     Microphones(ProductGroup.Peripherals),
     Webcams(ProductGroup.Peripherals),
     Speakers(ProductGroup.Peripherals),
-    MousePads(ProductGroup.Peripherals);
+    MousePads(ProductGroup.Peripherals),
+
+    GamingChairs(ProductGroup.Furniture),
+    OfficeChairs(ProductGroup.Furniture),
+    GamingDesks(ProductGroup.Furniture),
+    OfficeDesks(ProductGroup.Furniture),
+    StandingDesks(ProductGroup.Furniture),
+    MonitorMounts(ProductGroup.Furniture),
+    Footrests(ProductGroup.Furniture);
 
     private final ProductGroup productGroup;
 
