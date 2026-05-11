@@ -2,7 +2,6 @@ name: Publish to GitHub Packages
 
 on:
   push:
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -18,13 +17,11 @@ jobs:
         with:
           java-version: "21"
           distribution: temurin
-          server-id: github
+          server-id: github # To musi pasować do <id> w pom.xml
           settings-path: ${{ github.workspace }}
 
-      - name: Install Maven
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y maven
-
       - name: Deploy to GitHub Packages
-        run: mvn deploy -s ${{ github.workspace }}/settings.xml
+        # Dodajemy zmienną środowiskową GITHUB_TOKEN
+        run: mvn --batch-mode deploy -s ${{ github.workspace }}/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
