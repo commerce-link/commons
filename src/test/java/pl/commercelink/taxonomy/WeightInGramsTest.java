@@ -17,12 +17,15 @@ class WeightInGramsTest {
             "'0.31',      310",
             "'0,31',      310",
             "'1.30 kg',  1300",
+            "'1,30 kg',  1300",
             "'1.30kg',   1300",
+            "'1,30kg',   1300",
             "'1.30KG',   1300",
             "' 1.30 kg ', 1300",
             "'500 g',     500",
             "'500g',      500",
             "'500 G',     500",
+            "'500G',      500",
             "'0.5 kg',    500"
     })
     void parses_known_formats_to_grams(String raw, Integer expectedGrams) {
