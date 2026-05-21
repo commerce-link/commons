@@ -4,68 +4,47 @@ public final class WeightInGrams {
 
     private static final long MAX_GRAMS = 1_000_000L;
     private static final double GRAMS_PER_KG = 1000.0;
-    private static final double GRAMS_PER_UNIT = 1.0;
+    private static final String KG_SUFFIX = "kg";
+    private static final String G_SUFFIX = "g";
+    private static final char DECIMAL_COMMA = ',';
+    private static final char DECIMAL_DOT = '.';
 
     private WeightInGrams() {}
 
     public static Integer parse(String raw) {
-        String trimmed = trimToNull(raw);
-        if (trimmed == null) return null;
-
-        WeightQuantity quantity = parseQuantity(trimmed);
-        return quantity == null ? null : toGrams(quantity);
-    }
-
-    private static String trimToNull(String raw) {
         if (raw == null) return null;
-        String trimmed = raw.trim();
-        return trimmed.isEmpty() ? null : trimmed;
-    }
+        String trimmed = raw.trim().toLowerCase();
+        if (trimmed.isEmpty()) return null;
 
-    private static WeightQuantity parseQuantity(String trimmed) {
-        WeightQuantity withSuffix = parseWithSuffix(trimmed.toLowerCase());
-        return withSuffix != null ? withSuffix : parseImplicitKilograms(trimmed);
-    }
-
-    private static WeightQuantity parseWithSuffix(String lower) {
-        if (lower.endsWith("kg")) {
-            String numberPart = lower.substring(0, lower.length() - 2).trim();
-            if (numberPart.isEmpty()) return null;
-            return toQuantity(numberPart, GRAMS_PER_KG);
+        double multiplier;
+        String numberPart;
+        if (trimmed.endsWith(KG_SUFFIX)) {
+            multiplier = GRAMS_PER_KG;
+            numberPart = trimmed.substring(0, trimmed.length() - KG_SUFFIX.length()).trim();
+        } else if (trimmed.endsWith(G_SUFFIX)) {
+            multiplier = 1.0;
+            numberPart = trimmed.substring(0, trimmed.length() - G_SUFFIX.length()).trim();
+        } else if (looksLikeImplicitKilograms(trimmed)) {
+            multiplier = GRAMS_PER_KG;
+            numberPart = trimmed;
+        } else {
+            return null;
         }
-        if (lower.endsWith("g")) {
-            String numberPart = lower.substring(0, lower.length() - 1).trim();
-            if (numberPart.isEmpty()) return null;
-            return toQuantity(numberPart, GRAMS_PER_UNIT);
-        }
-        return null;
-    }
+        if (numberPart.isEmpty()) return null;
 
-    private static WeightQuantity parseImplicitKilograms(String trimmed) {
-        String normalized = trimmed.replace(',', '.');
-        if (!normalized.contains(".")) return null;
-        return toQuantity(normalized, GRAMS_PER_KG);
-    }
-
-    private static WeightQuantity toQuantity(String numberPart, double gramsMultiplier) {
-        Double value = parsePositiveDouble(numberPart);
-        return value == null ? null : new WeightQuantity(value, gramsMultiplier);
-    }
-
-    private static Double parsePositiveDouble(String numberPart) {
+        double value;
         try {
-            double value = Double.parseDouble(numberPart.replace(',', '.'));
-            return value <= 0 ? null : value;
+            value = Double.parseDouble(numberPart.replace(DECIMAL_COMMA, DECIMAL_DOT));
         } catch (NumberFormatException e) {
             return null;
         }
+        if (value <= 0) return null;
+
+        long grams = Math.round(value * multiplier);
+        return grams > 0 && grams <= MAX_GRAMS ? (int) grams : null;
     }
 
-    private static Integer toGrams(WeightQuantity quantity) {
-        long grams = Math.round(quantity.value() * quantity.gramsMultiplier());
-        if (grams <= 0 || grams > MAX_GRAMS) return null;
-        return (int) grams;
+    private static boolean looksLikeImplicitKilograms(String s) {
+        return s.indexOf(DECIMAL_COMMA) >= 0 || s.indexOf(DECIMAL_DOT) >= 0;
     }
-
-    private record WeightQuantity(double value, double gramsMultiplier) {}
 }
