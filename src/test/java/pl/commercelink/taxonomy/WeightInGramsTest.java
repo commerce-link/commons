@@ -28,32 +28,32 @@ class WeightInGramsTest {
             "'500G',      500",
             "'0.5 kg',    500"
     })
-    void parses_known_formats_to_grams(String raw, Integer expectedGrams) {
+    void parsesKnownFormatsToGrams(String raw, Integer expectedGrams) {
         assertEquals(expectedGrams, WeightInGrams.parse(raw));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "  ", "\t"})
-    void returns_null_for_blank_input(String raw) {
+    void returnsNullForBlankInput(String raw) {
         assertNull(WeightInGrams.parse(raw));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"abc", "kg", "g", "-1", "0", "-1.5 kg", "0.0"})
-    void returns_null_for_unparseable_or_nonphysical(String raw) {
+    void returnsNullForUnparseableOrNonphysical(String raw) {
         assertNull(WeightInGrams.parse(raw));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"1300", "500", "42"})
-    void returns_null_for_integer_without_unit(String raw) {
+    void returnsNullForIntegerWithoutUnit(String raw) {
         assertNull(WeightInGrams.parse(raw));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"2000 kg", "1500000 g", "9999.99 kg"})
-    void returns_null_for_values_above_sanity_threshold(String raw) {
+    void returnsNullForValuesAboveSanityThreshold(String raw) {
         assertNull(WeightInGrams.parse(raw));
     }
 }
