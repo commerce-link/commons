@@ -4,10 +4,10 @@ Shared domain types used across CommerceLink libraries and the main application.
 
 This module has **zero external dependencies** (pure Java 21) and provides:
 
-- **`pl.commercelink.taxonomy.ProductCategory`** — product category enum (CPU, GPU, Laptops, Displays, etc.) organized by `ProductGroup`.
-- **`pl.commercelink.taxonomy.ProductGroup`** — top-level product grouping (Computers, PcComponents, Peripherals, etc.).
+- **`pl.commercelink.taxonomy.UnifiedProductIdentifiers`** — normalized product identifiers (EAN/GTIN, MPN) shared by supplier feeds, PIM and the main application.
+- **`pl.commercelink.taxonomy.WeightInGrams`** — parser for product weight strings from supplier feeds (`"1.2kg"`, `"340 g"`, implicit kilograms) into grams.
 
-It's quite likely this library will get deprecated in near future as we migrate towards a more flexible taxonomy system, but for now it serves as a simple shared domain model for product categorization.
+Product categories and groups are plain strings owned by their consumers (PIM is the source of truth for the category tree; the main application keeps its own inventory category dictionary). The former `ProductCategory`/`ProductGroup` enums were removed in 0.1.4.
 
 ## Usage
 
@@ -17,8 +17,6 @@ Add as a Maven dependency:
 <dependency>
     <groupId>pl.commercelink</groupId>
     <artifactId>commercelink-commons</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.4</version>
 </dependency>
 ```
-
-Localization (i18n) is intentionally **not** included in this module. The main application provides `ProductCategoryLocalization` and `ProductGroupLocalization` utilities for resolving localized names.
