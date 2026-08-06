@@ -14,11 +14,18 @@ public class UnifiedProductIdentifiers {
         return eans.stream().map(UnifiedProductIdentifiers::unifyEan).collect(Collectors.toSet());
     }
 
+    private static final int MIN_EAN_LENGTH = 12;
+
     public static String unifyEan(String ean) {
-        if (ean != null && ean.startsWith("0")) {
-            return ean.replaceFirst("0", "");
+        if (ean == null) {
+            return null;
         }
-        return ean;
+        int maxStrip = Math.max(0, ean.length() - MIN_EAN_LENGTH);
+        int stripped = 0;
+        while (stripped < maxStrip && ean.charAt(stripped) == '0') {
+            stripped++;
+        }
+        return ean.substring(stripped);
     }
 
     public static Set<String> unifyMfns(Collection<String> mfns) {
